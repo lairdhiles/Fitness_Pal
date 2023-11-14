@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Goals</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #fitness-form {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        select,
+        input[type="number"],
+        input[type="range"],
+        textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="range"] {
+            width: calc(100% - 22px);
+            margin-right: 0;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Custom styling for radio buttons */
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        /* Container for radio buttons */
+        .radio-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="fitness-form">
+    <h2>Fitness Goals</h2>
+    <form id="goalsForm" onsubmit="submitForm(event)">
+        <!-- Training Goal Input -->
+        <label for="goal">Training Goal:</label>
+        <select id="goal" name="goal">
+            <option value="lose_weight">Lose Weight</option>
+            <option value="build_muscle">Build Muscle</option>
+            <option value="stay_fit">Stay Fit</option>
+        </select>
+
+        <!-- Time to Train Input -->
+        <label for="duration">Time to Train (minutes per session):</label>
+        <input type="number" id="duration" name="duration" min="15" max="120" required>
+
+        <!-- Height Input with Slider -->
+        <label for="height">Height (in cm):</label>
+        <input type="range" id="height" name="height" min="100" max="250" step="1" value="170" required>
+        <output for="height" id="heightOutput">170 cm</output>
+
+        <!-- Weight Input with Slider -->
+        <label for="weight">Weight (in kg):</label>
+        <input type="range" id="weight" name="weight" min="30" max="200" step="1" value="70" required>
+        <output for="weight" id="weightOutput">70 kg</output>
+
+        <!-- Age Input -->
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" min="1" max="120" required>
+
+        <!-- Gender Input with Radio Buttons -->
+        <label>Gender:</label>
+        <div class="radio-group">
+            <input type="radio" id="male" name="gender" value="male" checked>
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Female</label>
+        </div>
+
+        <!-- What's Holding You Back Input -->
+        <label for="holdingBack">What's holding you back the most?</label>
+        <textarea id="holdingBack" name="holdingBack" rows="4" placeholder="Tell us about any challenges or obstacles you're facing"></textarea>
+
+        <!-- Diet Preferences Input -->
+        <label for="diet">Diet Preferences:</label>
+        <input type="text" id="diet" name="diet" placeholder="e.g., Vegetarian, Keto, Balanced">
+
+        <button type="submit">Generate Program</button>
+    </form>
+</div>
+
+<script>
+    function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        // Retrieve form values
+        var goal = document.getElementById('goal').value;
+        var duration = document.getElementById('duration').value;
+        var height = document.getElementById('height').value;
+        var weight = document.getElementById('weight').value;
+        var age = document.getElementById('age').value;
+        var gender = document.querySelector('input[name="gender"]:checked').value;
+        var holdingBack = document.getElementById('holdingBack').value;
+        var diet = document.getElementById('diet').value;
+
+        // Prepare data to send to the server (you can use AJAX or fetch API)
+        var formData = {
+            goal: goal,
+            duration: duration,
+            height: height,
+            weight: weight,
+            age: age,
+            gender: gender,
+            holdingBack: holdingBack,
+            diet: diet
+        };
+
+        // Example: Sending data to a server using fetch API
+        fetch('https://your-server-endpoint.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response from the server (e.g., display results or update UI)
+            alert('Program generated!\n' + JSON.stringify(data));
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+        });
+    }
+
+    // Update slider output values dynamically
+    var heightOutput = document.getElementById('heightOutput');
+    var heightInput = document.getElementById('height');
+    heightOutput.innerHTML = heightInput.value + ' cm';
+
+    var weightOutput = document.getElementById('weightOutput');
+    var weightInput = document.getElementById('weight');
+    weightOutput.innerHTML = weightInput.value + ' kg';
+
+    heightInput.oninput = function() {
+        heightOutput.innerHTML = this.value + ' cm';
+    };
+
+    weightInput.oninput = function() {
+        weightOutput.innerHTML = this.value + ' kg';
+    };
+</script>
+
+</body>
+</html>
